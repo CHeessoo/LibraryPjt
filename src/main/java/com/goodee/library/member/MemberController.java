@@ -29,8 +29,15 @@ public class MemberController {
 	@RequestMapping(value="/create", method=RequestMethod.POST)
 	public String createMember(MemberVo vo) {
 		LOGGER.info("[MemberController] createMember();");
-		memberService.createMember(vo);
-		return "";
+		
+		// insert 성공시 이동할 페이지
+		String nextPage = "member/create_success";
+		
+		// insert 실패시 이동할 페이지
+		if(memberService.createMember(vo) <= 0) { 
+			nextPage = "member/create_fail";     
+		}
+		return nextPage;
 	}
 	
 	
