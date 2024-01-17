@@ -17,7 +17,7 @@
             <h3>회원가입 성공! 로그인해주세요.</h3>
          </div>
          <div class="others">
-            <a href="<c:url value='' />">로그인</a>
+            <a href="<c:url value='/member/login' />">로그인</a>
          </div>
       </div>
    </section>

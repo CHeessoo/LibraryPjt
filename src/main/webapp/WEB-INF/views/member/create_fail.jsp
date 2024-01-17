@@ -18,7 +18,7 @@
          </div>
          <div class="others">
             <a href="<c:url value='/member/create' />">회원가입</a>
-            <a href="<c:url value='' />">로그인</a>
+            <a href="<c:url value='/member/login' />">로그인</a>
          </div>
       </div>
    </section>

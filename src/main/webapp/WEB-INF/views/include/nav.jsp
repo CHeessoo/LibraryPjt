@@ -24,13 +24,16 @@
         </ul>
       </div>
       <%} else {%>
+      <div style="text-align: right; margin-bottom: 1%; color: #307004;">
+        <c:out value="${loginMember.m_name} 님 환영합니다♥" />
+      </div>
       <div class="menu">
         <ul>
            <li>
               <a href="<c:url value='/member/logout'/>">로그아웃</a>
            </li>
            <li>
-              <a href="<c:url value='/'/>">계정수정</a>
+              <a href="<c:url value='/member/${loginMember.m_no}'/>">계정수정</a>
            </li>
            <li>
               <a href="<c:url value='/member'/>">회원목록</a>

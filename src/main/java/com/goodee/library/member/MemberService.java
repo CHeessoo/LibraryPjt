@@ -39,5 +39,19 @@ public class MemberService {
 		LOGGER.info("[MemberService] listupMember();");
 		return dao.selectMemberList();
 	}
+	
+	// 회원 정보 수정
+	public int modifyMember(MemberVo vo) {
+		LOGGER.info("[MemberService] modifyMember();");
+		return dao.updateMember(vo);
+	}
+	
+	// 회원 정보
+	public MemberVo getLoginedMemberVo(int m_no) {
+		LOGGER.info("[MemberService] getLoginedMemberVo();");
+		
+		MemberVo loginedMemberVo = dao.selectMemberOne(m_no);
+		return loginedMemberVo;
+	}
 
 }

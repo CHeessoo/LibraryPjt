@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/member")
@@ -127,6 +127,51 @@ public class MemberController {
 		model.addAttribute("memberVos", memberVos);
 		return "member/listup";
 	}
+	
+	// 회원 정보 수정 화면 이동
+	@RequestMapping(value="/{m_no}", method=RequestMethod.GET)
+	public String modifyMember(@PathVariable String m_no, HttpSession session) {
+		LOGGER.info("[MemberController] modifyMember");
+		
+		// 다른 사람의 정보 수정 O
+		// 1. url에 있는 m_no 기준 select
+		// 2. 수정 화면
+		
+		// 내 정보만 수정 O
+		// 1. 세션에 있는 m_no 기준
+		// 2. 수정 화면
+		MemberVo loginedMemberVo = (MemberVo)session.getAttribute("loginMember");
+		String nextPage = "";
+		if(loginedMemberVo == null) { // null 체크
+			// 로그인 화면 이동
+			nextPage = "redirect:/member/login";
+		} else {
+			// 수정 화면 이동
+			nextPage = "member/modify_form";
+		}
+		return nextPage;
+	}
+	
+	// 회원 정보 수정 기능
+	@RequestMapping(value="/{m_no}", method=RequestMethod.POST)
+	public String modifyMemberConfirm(MemberVo vo, HttpSession session) {
+		LOGGER.info("[MemberController] modifyMemberConfirm();");
+		// 1. 회원 정보 수정 (DB)
+		int result = memberService.modifyMember(vo);
+		if(result > 0) { 
+			// 2. 세션 정보 변경
+			MemberVo loginedMemberVo = new MemberVo();
+			loginedMemberVo = memberService.getLoginedMemberVo(vo.getM_no());  // 수정된 정보 가져오기
+			session.setAttribute("loginMember", loginedMemberVo);              // 세션에 수정된 정보 새로 저장
+			session.setMaxInactiveInterval(60*30);                             // 세션값 30분 지속
+			// 3. 성공 화면 이동
+			
+		} else {   
+			// 3. 실패 화면 이동
+			
+		}
+	}
+	
 	
 	
 }

@@ -1,15 +1,12 @@
 package com.goodee.library.member;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
@@ -19,13 +16,22 @@ public class MemberDao {
 	private static final Logger LOGGER = 
 			LoggerFactory.getLogger(MemberDao.class);
 	
-	@Autowired
-	JdbcTemplate jdbcTemplate;
+	// jdbcTemplate 사용 -> maybatis로 변경
+//	@Autowired
+//	JdbcTemplate jdbcTemplate;
 	
 	@Autowired
 	PasswordEncoder passwordEncoder;
 	
-	// 아이디 중복 검사
+	// mybatis에서 쿼리를 관리해주는 SqlSession을 의존성 주입한다. (데이터베이스에 접근하는것을 관리)
+	@Autowired
+	private SqlSession sqlSession;  // 도서쿼리와 회원쿼리를 따로 관리해야하기 때문에 클래스 안에서만 사용하는 접근제한자(private) 이용
+	
+	// namespace를 전역변수로 설정
+	private final String namespace = "com.goodee.library.member.MemberDao.";
+	
+	// 아이디 중복 검사 - jdbcTemplate
+	/*
 	public boolean isMemberCheck(String m_id) {
 		LOGGER.info("[MemberDao] isMemberCheck();");
 		
@@ -39,8 +45,21 @@ public class MemberDao {
 			return false; // false 반환
 		}
 	}
+	*/
 	
-	// 회원 정보 추가
+	// 아이디 중복 검사 - mybatis
+	public boolean isMemberCheck(String m_id) {
+		LOGGER.info("[MemberDao] isMemberCheck();");
+		
+		// 쿼리 수행 결과를 result로 받아옴
+		// selectOne(어떤 쿼리를 실행할건지 적어줌(맵퍼의 namespace.아이디(메소드명이랑 상관X)), 전달하는 값)
+		int result = sqlSession.selectOne(namespace + "isMemberCheck", m_id);
+		if(result > 0) return true;
+		else return false;
+	}
+	
+	// 회원 정보 추가 - jdbcTemplate
+	/*
 	public int insertMember(MemberVo vo) {
 		LOGGER.info("[MemberDao] insertMember();");
 		
@@ -58,9 +77,28 @@ public class MemberDao {
 		result = jdbcTemplate.update(sql, args.toArray());
 		return result;  // insert에 실패하면 -1 반환, 성공하면 업데이트된 수 만큼 반환
 	}
+	*/
 	
-	// 로그인 정보 반환
+	// 회원 정보 추가 - mybatis
+	public int insertMember(MemberVo vo) {
+		LOGGER.info("[MemberDao] insertMember();");
+		
+		// 비밀번호 암호화
+		// 1. vo안에 pw를 꺼낸다.  vo.setM_pw()
+		// 2. 암호화한다.          passwordEncoder.encode()
+		// 3. 다시 vo에 넣는다.    vo.getM_pw()
+		vo.setM_pw(passwordEncoder.encode(vo.getM_pw()));
+		
+		int result = -1;
+		
+		// insert가 됐을경우 result 값을 재할당
+		result = sqlSession.insert(namespace + "insertMember", vo);
+		return result;
+	}
+	
+	// 로그인 정보 반환 - jdbcTemplate
 	// 매개변수로 id, pw를 전달 받은뒤 그에 상응하는 로그인 정보 반환
+	/*
 	public MemberVo selectMember(MemberVo vo) {
 		LOGGER.info("[MemberDao] selectMember();");
 		
@@ -72,6 +110,7 @@ public class MemberDao {
 		try {
 			
 			// 쿼리 실행 결과를 List로 받아옴
+			// RowMapper 란, row 단위로 ResultSet의 row를 매핑하기 위해 JdbcTemplate에서 사용하는 인터페이스
 			memberVos = jdbcTemplate.query(sql, new RowMapper<MemberVo>() { // row가 여러개인 정보를 받아올건데 그 타입이 MemberVo라는 의미
 				// 상속 
 				@Override
@@ -103,8 +142,28 @@ public class MemberDao {
 		// 조회된 정보가 존재하면 해당 정보를 반환하고 아니라면 null을 반환
 		return memberVos.size() > 0 ? memberVos.get(0) : null;
 	}
+	*/
 	
-	// 회원 목록
+	// mybatis
+	// 로그인 - 회원정보 조회 및 비밀번호 확인
+	public MemberVo selectMember(MemberVo vo) {
+		LOGGER.info("[MemberDao] selectMember();");
+		
+		MemberVo resultVo = new MemberVo();
+		resultVo = sqlSession.selectOne(namespace + "selectMember", vo.getM_id());
+		
+		// 1.   id null 체크 (NullPointerException 방지)
+		// 2.   select해온 정보의 비밀번호와 입력받은 비밀번호를 비교
+		// 2-1. (입력받은 비밀번호, 암호화된(가져온 정보)비밀번호)
+		if(resultVo != null
+				&& passwordEncoder.matches(vo.getM_pw(), resultVo.getM_pw()) == false) {  
+				resultVo = null;
+		}
+		return resultVo;
+	}
+	
+	// 회원 목록 - jdbcTemplate
+	/*
 	public List<MemberVo> selectMemberList() {
 		LOGGER.info("[MemberDao] selectMemberList();");
 		
@@ -131,6 +190,29 @@ public class MemberDao {
 		});
 
 		return memberVos;
+	}
+	*/
+	
+	// 회원 목록 - mybatis
+	public List<MemberVo> selectMemberList() {
+		LOGGER.info("[MemberDao] selectMemberList();");
+		
+		List<MemberVo> resultList = new ArrayList<MemberVo>();
+		resultList = sqlSession.selectList(namespace + "selectMemberList");
+		return resultList;
+	}
+	
+	// 회원 정보 수정
+	public int updateMember(MemberVo vo) {
+		LOGGER.info("[MemberDao] updateMember();");
+		int result = sqlSession.update(namespace + "updateMember", vo);
+		return result;
+	}
+	
+	// 회원 정보
+	public MemberVo selectMemberOne(int m_no) {
+		LOGGER.info("[MemberDao] selectMemberOne();");
+		
 	}
 	
 	

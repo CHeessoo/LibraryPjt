@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.goodee.library.member.MemberDao">
+
+  <select id="isMemberCheck" parameterType="String" resultType="int">
+    SELECT COUNT(*) FROM tbl_member
+    <where>
+      m_id = #{m_id}
+    </where>
+  </select>
+  
+  <insert id="insertMember" parameterType="com.goodee.library.member.MemberVo">
+    INSERT INTO tbl_member(m_id, m_pw, m_name, m_gender, m_mail, m_phone, m_reg_date, m_mod_date)
+    VALUES (#{m_id}, #{m_pw}, #{m_name}, #{m_gender}, #{m_mail}, #{m_phone}, NOW(), NOW())
+  </insert>
+  
+  <select id="selectMember" parameterType="String" resultType="com.goodee.library.member.MemberVo">
+    SELECT * FROM tbl_member
+    <where>
+      m_id = #{m_id}
+    </where>
+  </select>
+  
+  <select id="selectMemberList" resultType="com.goodee.library.member.MemberVo">
+    SELECT * FROM tbl_member
+  </select>
+  
+  <update id="updateMember" parameterType="com.goodee.library.member.MemberVo">
+    UPDATE tbl_member
+       SET m_name = #{m_name}
+         , m_gender = #{m_gender}
+         , m_mail = #{m_mail}
+         , m_phone = #{m_phone}
+         , m_mod_date = NOW()
+    <where>
+      m_no = #{m_no}
+    </where>
+  </update>
+  
+  <select id="">
+  
+  </select>
+
+</mapper>
