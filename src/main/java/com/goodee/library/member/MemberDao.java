@@ -209,11 +209,19 @@ public class MemberDao {
 		return result;
 	}
 	
-	// 회원 정보
+	// 회원 단일 정보 데이터베이스에서 조회 (m_no기준)
 	public MemberVo selectMemberOne(int m_no) {
-		LOGGER.info("[MemberDao] selectMemberOne();");
-		
+		LOGGER.info("[MemberDao] selectMemberOne(int m_no);");
+		return sqlSession.selectOne(namespace + "selectMemberOne", m_no);
 	}
+	
+	// 아이디, 이름, 메일 기준 회원 조회 (비밀번호 설정)
+	public MemberVo selectMemberOne(MemberVo vo) {
+		LOGGER.info("[MemberDao] selectMemberOne(MemberVo vo);");
+		MemberVo memberVo = sqlSession.selectOne(namespace + "selectMemberForPassword", vo);
+		return memberVo;
+	}
+	
 	
 	
 }

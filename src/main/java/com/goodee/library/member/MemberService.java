@@ -46,12 +46,28 @@ public class MemberService {
 		return dao.updateMember(vo);
 	}
 	
-	// 회원 정보
+	// 회원 단일 정보 조회
 	public MemberVo getLoginedMemberVo(int m_no) {
 		LOGGER.info("[MemberService] getLoginedMemberVo();");
+		return dao.selectMemberOne(m_no);
+	}
+	
+	// 비밀번호 설정 기능
+	public int findPasswordConfirm(MemberVo vo) {
+		LOGGER.info("[MemberService] findPasswordConfirm();");
+		// 1. 입력한 정보와 일치하는 사용자가 있는지 확인
 		
-		MemberVo loginedMemberVo = dao.selectMemberOne(m_no);
-		return loginedMemberVo;
+		MemberVo selectedMember = dao.selectMemberOne(vo);
+		int result = 0;
+		// 조회한 정보가 존재할 경우
+		if(selectedMember != null) {  
+			// 2. 새로운 비밀번호 생성
+			// 3. 생성된 비밀번호 업데이트
+			// 4. 메일 보내기
+			
+		}
+		
+		return result;
 	}
 
 }

@@ -37,8 +37,23 @@
     </where>
   </update>
   
-  <select id="">
+  <select id="selectMemberOne" parameterType="int" resultType="com.goodee.library.member.MemberVo">
+    SELECT * FROM tbl_member
+    <where>
+      m_no = #{m_no}
+    </where>
+  </select>
   
+  <!-- select 추가 -->
+  <select id="selectMemberForPassword" 
+  parameterType="com.goodee.library.member.MemberVo" 
+  resultType="com.goodee.library.member.MemberVo">
+    SELECT * FROM tbl_member
+    <where>
+           m_id = #{m_id}
+       AND m_name = #{m_name}
+       AND m_mail = #{m_mail}
+    </where>
   </select>
 
 </mapper>
