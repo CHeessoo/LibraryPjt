@@ -55,5 +55,15 @@
        AND m_mail = #{m_mail}
     </where>
   </select>
+  
+  <!-- 파라미터타입에 인터페이스(Map)를 적어도 되긴 하지만 상세 구분을 위해 클래스(hashMap)를 작성하는 것을 권장한다. -->
+  <update id="updatePassword" parameterType="hashMap">
+    UPDATE tbl_member
+       SET m_pw = #{m_pw}
+         , m_mod_date = NOW()
+    <where>
+           m_id = #{m_id}
+    </where>
+  </update>
 
 </mapper>
