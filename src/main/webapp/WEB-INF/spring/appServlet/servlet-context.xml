@@ -23,6 +23,16 @@
 	
 	<context:component-scan base-package="com.goodee.library" />
 	
+  <!-- 인터셉터 동작 지정 -->
+  <interceptors>
+   <interceptor>
+      <mapping path="/member/**"/>
+      <exclude-mapping path="/member/login"/>
+      <exclude-mapping path="/member/create"/>
+      <exclude-mapping path="/member/findPassword"/>
+      <beans:bean class="com.goodee.library.member.MemberLoginInterceptor"/>
+   </interceptor>
+</interceptors>
 	
 	
 </beans:beans>
