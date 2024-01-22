@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.goodee.library.book.BookDao">
+
+
+  <insert id="insertBook" parameterType="com.goodee.library.book.BookVo">
+    INSERT INTO tbl_book(b_thumbnail, b_name, b_author, b_publisher, b_publish_year, b_reg_date)
+    VALUES (#{b_thumbnail}, #{b_name}, #{b_author}, #{b_publisher}, #{b_publish_year}, NOW())
+  </insert>
+
+
+</mapper>
