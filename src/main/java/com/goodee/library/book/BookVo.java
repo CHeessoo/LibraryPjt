@@ -1,11 +1,13 @@
 package com.goodee.library.book;
 
+import com.goodee.library.util.PagingVo;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class BookVo {
+public class BookVo extends PagingVo{
 
 	private int b_no;
 	private String b_name;

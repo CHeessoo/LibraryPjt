@@ -8,5 +8,31 @@
     VALUES (#{b_thumbnail}, #{b_name}, #{b_author}, #{b_publisher}, #{b_publish_year}, NOW())
   </insert>
 
+  <select id="selectBookList" parameterType="com.goodee.library.book.BookVo" resultType="com.goodee.library.book.BookVo">
+    SELECT * FROM tbl_book
+    <if test="b_name != null and b_name.equals('') == false">
+      <where>
+        b_name LIKE CONCAT('%', #{b_name}, '%')
+      </where>
+    </if>
+    ORDER BY b_no DESC
+    LIMIT #{limit_pageNo}, #{pageSize}
+  </select>
+  
+  <select id="selectBookCount" parameterType="String" resultType="int">
+    SELECT COUNT(*) FROM tbl_book
+    <if test="b_name != null and b_name.equals('') == false">
+      <where>
+        b_name LIKE CONCAT('%', #{b_name}, '%')
+      </where>
+    </if>
+  </select>
+  
+  <select id="selectBookOne" parameterType="int" resultType="com.goodee.library.book.BookVo">
+    SELECT * FROM tbl_book
+    <where>
+      b_no = #{b_no}
+    </where>
+  </select>
 
 </mapper>

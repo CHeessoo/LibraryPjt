@@ -41,13 +41,16 @@
            <li>
             <a href="<c:url value='/book/create'/>">도서등록</a>
            </li>
+           <li>
+            <a href="<c:url value='/book'/>">도서목록</a>
+           </li>
         </ul>
       </div>
       <div class="search">
-        <form>
-           <input type="text">
-           <input type="button" value="검색">
-        </form>
+         <form action="<c:url value='/book'/>" name="search_book_form" method="get">
+            <input type="text" name="b_name" placeholder="검색하고자 하는 도서 이름을 입력하세요.">
+            <input type="submit" value="검색">
+         </form>
       </div>
       <%} %>
       

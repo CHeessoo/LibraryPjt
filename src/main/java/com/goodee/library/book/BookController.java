@@ -1,9 +1,13 @@
 package com.goodee.library.book;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,6 +56,32 @@ public class BookController {
 		} else {
 			return "book/create_fail";
 		}
+	}
+	
+	
+	// 도서 목록 조회 기능(검색)
+	@RequestMapping(method=RequestMethod.GET)
+	public String selectBookList(Model model, BookVo vo) {
+		LOGGER.info("[BookController] selectBookList();");
+		
+		// 1. 목록 정보 조회(DB)
+		vo.setTotalCount(bookService.selectBookCount(vo.getB_name()));
+		List<BookVo> bookVos = bookService.selectBookList(vo);
+		// 2. 화면 전환 + 정보 전달
+		model.addAttribute("bookVos", bookVos);
+		model.addAttribute("pagingVo", vo);
+		return "book/listup";
+	}
+	
+	// 도서 상세 이동
+	@RequestMapping(value="/{b_no}", method=RequestMethod.GET)
+	public String bookDetail(@PathVariable int b_no, Model model) {
+		LOGGER.info("[BookController] bookDetail();");
+		// 1. 도서 하나 정보 조회
+		BookVo vo = bookService.bookDetail(b_no);
+		// 2. 화면 전환 + 정보 전달
+		model.addAttribute("bookVo", vo);
+		return "book/detail";
 	}
 	
 }
