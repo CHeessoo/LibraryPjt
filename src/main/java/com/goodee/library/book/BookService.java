@@ -37,9 +37,15 @@ public class BookService {
 	
 	// 도서 상세 이동
 	public BookVo bookDetail(int b_no) {
-		LOGGER.info("[bookService] bookDetail();");
+		LOGGER.info("[BookService] bookDetail();");
 		BookVo vo = bookDao.selectBookOne(b_no);
 		return vo;
+	}
+	
+	// 도서 수정
+	public int modifyConfirm(BookVo vo) {
+		LOGGER.info("[BookService] modifyConfirm();");
+		return bookDao.updateBook(vo);
 	}
 
 }

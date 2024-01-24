@@ -48,4 +48,11 @@ public class BookDao {
 		return vo;
 	}
 	
+	// 도서 수정
+	public int updateBook(BookVo vo) {
+		LOGGER.info("[BookDao] updateBook();");
+		int result = sqlSession.update(namespace + "updateBook", vo);
+		return result;
+	}
+	
 }

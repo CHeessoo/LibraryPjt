@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.goodee.library.util.UploadFileService;
 
@@ -83,5 +84,41 @@ public class BookController {
 		model.addAttribute("bookVo", vo);
 		return "book/detail";
 	}
+	
+	// 도서 수정 이동
+	@RequestMapping(value="/modify/{b_no}", method=RequestMethod.GET)
+	public String modifyBookForm(@PathVariable int b_no, Model model) {
+		LOGGER.info("[BookController] modifyBookForm();");
+		// 1. 기존 정보 조회
+		BookVo vo = bookService.bookDetail(b_no);
+		// 2. 화면 전환 + 정보 전달
+		model.addAttribute("bookVo", vo);
+		return "book/modify";
+	}
+	
+	// 도서 수정 기능
+	@RequestMapping(value="/modify/{b_no}", method=RequestMethod.POST)
+	public String modifyBookConfirm(BookVo vo, @RequestParam("file") MultipartFile file) {
+		LOGGER.info("[BookController] mdifyBookConfirm();");
+		
+		// 1. 만약에 새로운 파일 ㅇ -> 파일 업로드
+		if(file.getOriginalFilename().equals("") == false) { // 첨부 파일이 존재하는 경우 (getOriginalFilename 사용 이유 : 부하가 제일 적음)
+			String savedFileName = uploadFileService.upload(file);
+			if(savedFileName != null) {
+				vo.setB_thumbnail(savedFileName);
+			}
+		}
+		// 2. 도서 정보 수정
+		int result = bookService.modifyConfirm(vo);
+		// 3. 결과 화면 이동
+		if(result <= 0) {
+			return "book/modify_fail";
+		} else {
+			return "book/modify_success";
+		}
+	}
+	
+	// 도서 삭제 기능
+
 	
 }
