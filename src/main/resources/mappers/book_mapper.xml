@@ -49,5 +49,12 @@
       b_no = #{b_no}
      </where>
   </update>
+  
+  <delete id="deleteBook" parameterType="int">
+    DELETE FROM tbl_book
+    <where>
+      b_no = #{b_no}
+    </where>
+  </delete>
 
 </mapper>

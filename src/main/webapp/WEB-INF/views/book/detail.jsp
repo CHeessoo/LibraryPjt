@@ -55,9 +55,64 @@
          
          <div class="buttons">
             <a class="modify_book_button" href="/book/modify/${bookVo.b_no}">도서 수정</a>
-            <a class="delete_book_button" href="">도서 삭제</a>         
+            <a class="delete_book_button" onclick="deleteBook('${bookVo.b_no}');">도서 삭제</a>         
          </div>
       </div>
    </section>
+   <script type="text/javascript">
+   
+    function deleteBook(bookNo) {
+      // 1. 도서 삭제 유무 확인
+      let result = confirm('해당 도서를 정말 삭제하시겠습니까?');
+      // 2. 도서 삭제 후 결과 alert으로 알려주기
+      
+      // response 결과는 String으로 받아봄
+      // response 결과가 400이면 성공 아닐경우 실패 (성공시 목록으로 이동하도록 location위치 변경)
+      if(result) {
+        // fetch(url, 옵션);
+        fetch('/book/' + bookNo, {
+          method:'DELETE',  // 요청 메소드
+          headers:{         // ajax에서 data
+            'Content-Type':'application/json;charset=utf-8'
+          }
+        })
+        .then(response => response.text())
+        .then(data => {
+          if(data === '400'){
+            alert('삭제성공');
+            location.replace('/book');
+          }else{
+            alert('삭제실패');
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      }
+    }
+    
+    
+    
+    
+    /* 
+    
+    (.then으로 추가 정보 전달 함수 연결)
+    .then 뒤에 화살표 함수 설명
+    
+    
+    function 함수명 (response) {
+      return response.text();
+    }
+    function 함수명 (data) {
+      
+    }
+    */
+    
+    
+    // 함수 호출은 inline 방식 onclick 이벤트로 호출함
+   
+   </script>
+   
+   
 </body>
 </html>

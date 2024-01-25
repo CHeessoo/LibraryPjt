@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.goodee.library.util.UploadFileService;
 
@@ -119,6 +119,19 @@ public class BookController {
 	}
 	
 	// 도서 삭제 기능
+	// 비동기 통신을 할 수 있게 해주는 ResponseEntity<> 방식으로 반환 String 제네릭 사용
+	@RequestMapping(value="/{b_no}", method=RequestMethod.DELETE)
+	public ResponseEntity<String> deleteBookConfirm(@PathVariable int b_no) {  
+		LOGGER.info("[BookController] deleteBookConfirm();");
+		
+		// 실패 상황 가정(default)
+		String result = "200";
+		if(bookService.deleteBook(b_no) > 0) {
+			result = "400";
+		}
+		// ResponseEntity로 상태 코드를 지정
+		return ResponseEntity.ok(result);
+	}
 
 	
 }

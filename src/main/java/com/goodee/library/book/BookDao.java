@@ -55,4 +55,11 @@ public class BookDao {
 		return result;
 	}
 	
+	// 도서 삭제
+	public int deleteBook(int b_no) {
+		LOGGER.info("[BookDao] deleteBook();");
+		int result = sqlSession.delete(namespace + "deleteBook", b_no);
+		return result;
+	}
+	
 }

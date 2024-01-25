@@ -47,5 +47,11 @@ public class BookService {
 		LOGGER.info("[BookService] modifyConfirm();");
 		return bookDao.updateBook(vo);
 	}
+	
+	// 도서 삭제
+	public int deleteBook(int b_no) {
+		LOGGER.info("[BookService] deleteBook();");
+		return bookDao.deleteBook(b_no);
+	}
 
 }
