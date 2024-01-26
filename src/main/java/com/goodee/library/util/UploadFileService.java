@@ -26,7 +26,7 @@ public class UploadFileService {
 		// 파일 확장자 저장
 		String fileExtension = fileOriName.substring(fileOriName.lastIndexOf("."), fileOriName.length()); 
 		// 파일 저장 위치 지정
-		String uploadDir = "library\\upload\\";
+		String uploadDir = "/var/lib/tomcat9/webapps/upload/";
 		
 		// 시스템 파일명 저장 (범용 고유 식별자(Universally Unique Identifier, UUID) 사용)
 		UUID uuid = UUID.randomUUID();
