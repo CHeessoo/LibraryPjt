@@ -34,7 +34,7 @@ public class UploadFileService {
 		String uniqueName = uuid.toString().replaceAll("-", "");
 		
 		// 새로운 파일 생성 (껍데기)
-		File saveFile = new File(uploadDir + "\\" + uniqueName + fileExtension);
+		File saveFile = new File(uploadDir + uniqueName + fileExtension);
 		
 		// 디렉터리가 없는 경우 새로 생성
 		if(!saveFile.exists()) saveFile.mkdirs();
