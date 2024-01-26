@@ -189,7 +189,7 @@ public class MemberController {
 		LOGGER.info("[MemberController] findPasswordConfirm();");
 		
 		int result = memberService.findPasswordConfirm(vo);
-		if(result >= 0) {
+		if(result <= 0) {
 			// 정보가 일치하지 않은 경우
 			return "member/find_password_fail";
 		} else {
